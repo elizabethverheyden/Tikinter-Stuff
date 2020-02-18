@@ -1,0 +1,51 @@
+from tkinter import *
+
+window= Tk()
+
+playground = Canvas(window, width = 1200, height = 601, bg="yellow")
+playground.pack()
+
+# this creates the background image
+summitImg = PhotoImage(file = "summit.gif")
+summitBg = playground.create_image(20,20,anchor = NW, image=summitImg)
+
+# this puts an image on top of the background
+dragonPic = PhotoImage(file = "drag.png")
+dragonPic_img = dragonPic
+ship = playground.create_image(621,170, image = dragonPic)
+
+# getting the image's boundary box coordinates
+def dragonBoundary():
+    dragonBbox = playground.bbox(ship)
+#     let each coordinate have its own variable
+    shipx1=dragonBbox[0]
+    shipy1=dragonBbox[1]
+    shipx2=dragonBbox[2]
+    shipy2=dragonBbox[3]
+
+    # keeping the ship from moving off the screen
+
+    # right side
+    if shipx2>1275:
+        playground.move(ship,-5,0)
+    # left
+    elif shipx1<10:
+        playground.move(ship,5,0)
+
+# the movement functions
+def moveright(event):
+    for i in range(3):
+        playground.move(ship, 2,0)
+#         getting the ships coordinates every time it moves
+        dragonBoundary()
+
+def moveleft(event):
+    playground.move(ship,-5,0)
+#     getting the ships coordinates every time it moves
+    dragonBoundary()
+
+# binds the keys to movement functions
+playground.bind_all("<Right>", moveright)
+playground.bind_all("<Left>", moveleft)
+
+window.mainloop()
