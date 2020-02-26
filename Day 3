@@ -1,0 +1,90 @@
+from tkinter import *
+
+window= Tk()
+
+playground = Canvas(window, width = 1200, height = 601, bg="yellow")
+playground.pack()
+
+# this creates the background image
+summitImg = PhotoImage(file = "summit.gif")
+summitBg = playground.create_image(20,20,anchor = NW, image=summitImg)
+
+# this puts an image on top of the background
+dragonPic = PhotoImage(file = "drag.png")
+dragonPic_img = dragonPic
+ship = playground.create_image(621,350, image = dragonPic)
+
+sunPic = PhotoImage(file= "sun.png")
+lightningPic_img = sunPic
+light = playground.create_image(200,200, image= sunPic)
+# getting the image's boundary box coordinates
+def dragonBoundary():
+    dragonBbox = playground.bbox(ship)
+#     let each coordinate have its own variable
+    shipx1=dragonBbox[0]
+    shipy1=dragonBbox[1]
+    shipx2=dragonBbox[2]
+    shipy2=dragonBbox[3]
+
+    sunBbox = playground.bbox(light)
+    lightx1=sunBbox[0]
+    lighty1=sunBbox[1]
+    lightx2=sunBbox[2]
+    lighty2=sunBbox[3]
+
+
+ # keeping the ship from moving off the screen
+    # right side
+    if shipx2>1200:
+        playground.move(ship,-5,0)
+    # left
+    elif shipx1<10:
+        playground.move(ship,5,0)
+    elif shipy1<0:
+        playground.move(ship,0,5)
+    elif shipy2>600:
+        playground.move(ship,0,-5)
+
+    # THIS IS WHAT NEEDS WORK
+    elif lightx1 <= shipx1 <= lightx2 and lighty1 <= shipy1 <= lighty2:
+        playground.destroy(sunPic)
+        # playground.create_image(shipx1+50, shipy1, image=sunPic)
+        widget = Label(playground, text='You got a point!', fg='white', bg='black')
+        widget.pack()
+        playground.create_window(100, 100, window=widget)
+
+
+
+
+
+# the movement functions
+def moveright(event):
+    for i in range(3):
+        playground.move(ship, 2,0)
+#         getting the ships coordinates every time it moves
+        dragonBoundary()
+
+def moveleft(event):
+    playground.move(ship,-5,0)
+#     getting the ships coordinates every time it moves
+    dragonBoundary()
+
+def moveup(event):
+    playground.move(ship, 0,-5)
+    dragonBoundary()
+
+def movedown(event):
+    playground.move(ship, 0,5)
+    dragonBoundary()
+
+
+
+
+
+# binds the keys to movement functions
+playground.bind_all("<Right>", moveright)
+playground.bind_all("<Left>", moveleft)
+playground.bind_all("<Up>", moveup)
+playground.bind_all("<Down>", movedown)
+
+window.mainloop()
